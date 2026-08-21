@@ -1,3 +1,7 @@
+:root {
+  --main-dark-blue-color: #1c2b45;
+}
+
 @font-face {
   font-family: "Inspire TWDC";
   src: url("assets/fonts/InspireTWDC-Roman.otf") format("opentype");
@@ -144,6 +148,10 @@ body {
   gap: 0.6rem;
 }
 
+.unit > div:first-child {
+  background: #fff
+}
+
 .value {
   display: flex;
   gap: 0.3rem;
@@ -151,10 +159,10 @@ body {
 
 .digit {
   position: relative;
-  border-radius: 0.5rem;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28);
-  color: #1c2b45;
-  font-weight: 900;
+  border-radius: 0.2rem;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.28);
+  color: var(--main-dark-blue-color);
+  font-weight: 500;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   perspective: 260px;
@@ -189,7 +197,7 @@ body {
   top: 0;
   align-items: flex-start;
   border-radius: 0.5rem 0.5rem 0 0;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.18);
+  border-bottom: 2px solid var(--main-dark-blue-color);
 }
 
 .digit-bottom,
@@ -212,6 +220,10 @@ body {
   height: 60%;
   object-fit: contain;
   border-radius: 50%;
+}
+
+.digit-top .digit-glyph {
+  padding-top: 2px
 }
 
 .digit-leaf {
@@ -300,6 +312,7 @@ body {
   font-size: clamp(0.85rem, 2.2vw, 1.1rem);
   letter-spacing: 0.01em;
   opacity: 0.95;
+  color: var(--main-dark-blue-color);
 }
 
 .unit--days .label {

@@ -167,6 +167,7 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
   const target = parseDateInput(dateInput.value);
   if (!target || Number.isNaN(target.getTime())) return;
+  target -= 1000; // subtract 1 second to match the app functionality
   setUrlDate(target);
   startCountdown(target);
 });
