@@ -3,31 +3,13 @@
 }
 
 @font-face {
-  font-family: "Inspire TWDC";
-  src: url("assets/fonts/InspireTWDC-Roman.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Inspire TWDC";
-  src: url("assets/fonts/InspireTWDC-Italic.otf") format("opentype");
-  font-weight: 400;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "Inspire TWDC";
-  src: url("assets/fonts/InspireTWDC-Medium.otf") format("opentype");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Inspire TWDC";
-  src: url("assets/fonts/InspireTWDC-Black.otf") format("opentype");
-  font-weight: 900;
-  font-style: normal;
+    font-family: "InspireTWDC";
+    src: url("https://db.onlinewebfonts.com/t/130a63bec7d0efc605bbe6253a27de98.eot");
+    src: url("https://db.onlinewebfonts.com/t/130a63bec7d0efc605bbe6253a27de98.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/130a63bec7d0efc605bbe6253a27de98.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/130a63bec7d0efc605bbe6253a27de98.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/130a63bec7d0efc605bbe6253a27de98.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/130a63bec7d0efc605bbe6253a27de98.svg#InspireTWDC")format("svg");
 }
 
 * {
@@ -43,7 +25,7 @@ body {
   overflow: hidden;
   background: #0b0c10;
   color: #ffffff;
-  font-family: "Inspire TWDC", sans-serif;
+  font-family: "InspireTWDC", sans-serif;
 }
 
 #background-canvas {
