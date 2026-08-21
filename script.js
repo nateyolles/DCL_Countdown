@@ -28,6 +28,13 @@ function pickEmoji(excluded) {
   return n;
 }
 
+function preloadEmojis() {
+  for (let n = 1; n <= EMOJI_COUNT; n++) {
+    const img = new Image();
+    img.src = emojiPath(n);
+  }
+}
+
 function ensureDigitSlots(unitEl, count) {
   while (unitEl.children.length < count) {
     const span = document.createElement("span");
@@ -162,6 +169,7 @@ function renderDigits(unitEl, slotPrefix, digitStr, usedEmojis) {
 
 initBackground();
 initFromUrl();
+preloadEmojis();
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
