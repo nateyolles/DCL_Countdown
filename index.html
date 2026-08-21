@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countdown</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="background-canvas"></canvas>
+  <div class="overlay"></div>
+
+  <main class="content">
+    <form id="date-form" class="date-form">
+      <label for="date-input">Count down to</label>
+      <input type="date" id="date-input" required />
+      <button type="submit">Set</button>
+    </form>
+
+    <div id="countdown" class="countdown" hidden>
+      <div class="unit unit--days">
+        <div id="days" class="value"><span class="digit">0</span><span class="digit">0</span></div>
+        <span class="label">Days</span>
+      </div>
+      <div class="countdown-row">
+        <div class="unit">
+          <div id="hours" class="value"><span class="digit">0</span><span class="digit">0</span></div>
+          <span class="label">Hours</span>
+        </div>
+        <div class="unit">
+          <div id="minutes" class="value"><span class="digit">0</span><span class="digit">0</span></div>
+          <span class="label">Mins</span>
+        </div>
+        <div class="unit">
+          <div id="seconds" class="value"><span class="digit">0</span><span class="digit">0</span></div>
+          <span class="label">Secs</span>
+        </div>
+      </div>
+    </div>
+
+    <button id="change-date" class="change-date" hidden>Change date</button>
+  </main>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
