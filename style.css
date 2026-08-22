@@ -67,8 +67,10 @@ body {
   inset: 0;
   z-index: 10;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
   padding: 1.5rem;
 }
 
@@ -76,6 +78,10 @@ body {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
+}
+
+.date-form[hidden] {
+  display: none;
 }
 
 .date-form {
@@ -97,7 +103,8 @@ body {
   letter-spacing: 0.02em;
 }
 
-.date-form input[type="date"] {
+.date-form input[type="date"],
+.date-form select {
   font-family: inherit;
   font-size: 1rem;
   padding: 0.6rem 0.9rem;
@@ -106,6 +113,22 @@ body {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
   color-scheme: dark;
+  width: 16rem;
+}
+
+.date-form select {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.date-form select option {
+  color: #0b0c10;
+}
+
+.date-form select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .date-form button,
@@ -127,6 +150,29 @@ body {
 .change-date:hover {
   transform: translateY(-1px);
   opacity: 0.9;
+}
+
+.date-form button.link-button {
+  background: none;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  padding: 0.25rem;
+}
+
+.date-form button.link-button:hover {
+  transform: none;
+  opacity: 0.8;
+}
+
+.cruise-error {
+  position: relative;
+  z-index: 1;
+  max-width: 22rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  color: #ffd3d3;
 }
 
 .countdown[hidden] {

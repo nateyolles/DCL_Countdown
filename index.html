@@ -40,10 +40,36 @@
 
   <div id="date-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="date-form-label">
     <div class="modal-backdrop"></div>
-    <form id="date-form" class="date-form">
-      <label id="date-form-label" for="date-input">Count down to</label>
+
+    <form id="cruise-form" class="date-form">
+      <label id="date-form-label" for="ship-select">Choose your cruise</label>
+
+      <select id="ship-select" required disabled>
+        <option value="" disabled selected>Loading ships…</option>
+      </select>
+
+      <select id="cruise-select" required disabled>
+        <option value="" disabled selected>Choose a ship first</option>
+      </select>
+
+      <button type="submit">Set</button>
+
+      <button type="button" id="manual-date-toggle" class="link-button">
+        Can't find your date? Enter one manually
+      </button>
+    </form>
+
+    <p id="cruise-load-error" class="cruise-error" hidden>
+      Couldn't load the cruise list. Pick your departure date manually below.
+    </p>
+
+    <form id="date-form" class="date-form" hidden>
+      <label for="date-input">Count down to</label>
       <input type="date" id="date-input" required />
       <button type="submit">Set</button>
+      <button type="button" id="manual-date-back" class="link-button">
+        Back to cruise list
+      </button>
     </form>
   </div>
 

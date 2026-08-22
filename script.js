@@ -1,19 +1,28 @@
 import { DotLottie } from "https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.30.0/+esm";
 
 const DATE_PARAM = "date";
+const CRUISES_API_URL = "https://t40n13yy36.execute-api.us-west-2.amazonaws.com/cruises";
 
 const form = document.getElementById("date-form");
 const dateInput = document.getElementById("date-input");
+const manualDateBack = document.getElementById("manual-date-back");
 const countdownEl = document.getElementById("countdown");
 const changeDateBtn = document.getElementById("change-date");
 const dateModal = document.getElementById("date-modal");
 const modalBackdrop = document.querySelector(".modal-backdrop");
+const cruiseForm = document.getElementById("cruise-form");
+const shipSelect = document.getElementById("ship-select");
+const cruiseSelect = document.getElementById("cruise-select");
+const cruiseLoadError = document.getElementById("cruise-load-error");
+const manualDateToggle = document.getElementById("manual-date-toggle");
 const daysEl = document.getElementById("days");
 const hoursEl = document.getElementById("hours");
 const minutesEl = document.getElementById("minutes");
 const secondsEl = document.getElementById("seconds");
 
 let timerId = null;
+let cruises = [];
+let cruisesLoadFailed = false;
 
 const EMOJI_COUNT = 64;
 const zeroEmojiAssignments = new Map();
@@ -172,14 +181,30 @@ function renderDigits(unitEl, slotPrefix, digitStr, usedEmojis) {
 initBackground();
 initFromUrl();
 preloadEmojis();
+loadCruises();
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const target = parseDateInput(dateInput.value);
-  if (!target || Number.isNaN(target.getTime())) return;
-  target.setSeconds(target.getSeconds() - 1); // subtract 1 second to match the app functionality
-  setUrlDate(target);
-  startCountdown(target);
+  commitDateValue(dateInput.value);
+});
+
+cruiseForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  commitDateValue(cruiseSelect.value);
+});
+
+shipSelect.addEventListener("change", () => {
+  populateCruiseSelect(shipSelect.value);
+});
+
+manualDateToggle.addEventListener("click", () => {
+  cruiseForm.hidden = true;
+  form.hidden = false;
+});
+
+manualDateBack.addEventListener("click", () => {
+  form.hidden = true;
+  cruiseForm.hidden = false;
 });
 
 changeDateBtn.addEventListener("click", () => {
@@ -195,19 +220,17 @@ document.addEventListener("keydown", (e) => {
 function initFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const raw = params.get(DATE_PARAM);
-  const target = raw ? new Date(raw) : null;
 
-  if (target && !Number.isNaN(target.getTime())) {
-    dateInput.value = toLocalInputValue(target);
-    startCountdown(target);
+  if (raw && applyDate(raw)) {
+    dateInput.value = raw;
   } else {
     showForm();
   }
 }
 
-function setUrlDate(date) {
+function setUrlDate(value) {
   const params = new URLSearchParams(window.location.search);
-  params.set(DATE_PARAM, date.toISOString());
+  params.set(DATE_PARAM, value);
   const newUrl = `${window.location.pathname}?${params.toString()}`;
   window.history.replaceState({}, "", newUrl);
 }
@@ -226,8 +249,84 @@ function parseDateInput(value) {
   return new Date(y, m - 1, d);
 }
 
+function applyDate(value) {
+  const target = parseDateInput(value);
+  if (!target || Number.isNaN(target.getTime())) return false;
+  target.setSeconds(target.getSeconds() - 1); // subtract 1 second to match the app functionality
+  startCountdown(target);
+  return true;
+}
+
+function commitDateValue(value) {
+  if (!applyDate(value)) return;
+  setUrlDate(value);
+}
+
+async function loadCruises() {
+  try {
+    const res = await fetch(CRUISES_API_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const today = toLocalInputValue(new Date());
+    cruises = data.filter((cruise) => cruise.departure_date >= today);
+    populateShipSelect();
+  } catch (err) {
+    cruisesLoadFailed = true;
+  }
+
+  if (!dateModal.hidden) resetModalView();
+}
+
+function populateShipSelect() {
+  const ships = [...new Set(cruises.map((cruise) => cruise.ship_name))].sort();
+  shipSelect.innerHTML = '<option value="" disabled selected>Choose a ship</option>';
+  for (const ship of ships) {
+    const option = document.createElement("option");
+    option.value = ship;
+    option.textContent = ship;
+    shipSelect.appendChild(option);
+  }
+  shipSelect.disabled = false;
+}
+
+function formatDepartureDate(dateStr) {
+  return parseDateInput(dateStr).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function populateCruiseSelect(shipName) {
+  const shipCruises = cruises
+    .filter((cruise) => cruise.ship_name === shipName)
+    .sort((a, b) => a.departure_date.localeCompare(b.departure_date));
+
+  cruiseSelect.innerHTML = '<option value="" disabled selected>Choose a departure date</option>';
+  for (const cruise of shipCruises) {
+    const option = document.createElement("option");
+    option.value = cruise.departure_date;
+    option.textContent = `${formatDepartureDate(cruise.departure_date)} — ${cruise.title}`;
+    cruiseSelect.appendChild(option);
+  }
+  cruiseSelect.disabled = shipCruises.length === 0;
+}
+
+function resetModalView() {
+  form.hidden = true;
+  if (cruisesLoadFailed) {
+    cruiseForm.hidden = true;
+    cruiseLoadError.hidden = false;
+    form.hidden = false;
+  } else {
+    cruiseForm.hidden = false;
+    cruiseLoadError.hidden = true;
+  }
+}
+
 function showForm() {
   dateModal.hidden = false;
+  resetModalView();
 }
 
 function closeModal() {
