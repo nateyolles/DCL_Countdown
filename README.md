@@ -41,6 +41,6 @@ demo/        reference screenshot/video used while building the flip-card UI
 ## Disclaimer
 
 This project is for educational purposes only. It is not monetized in any way —
-there is no advertising, products for sale, user sign-in, trcking or affiliate links.
+there is no advertising, products for sale, user sign-in, tracking or affiliate links.
 
 Disney is the sole owner of all Disney branded assets.
