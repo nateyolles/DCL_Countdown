@@ -14,12 +14,6 @@
   <div class="overlay"></div>
 
   <main class="content">
-    <form id="date-form" class="date-form">
-      <label for="date-input">Count down to</label>
-      <input type="date" id="date-input" required />
-      <button type="submit">Set</button>
-    </form>
-
     <div id="countdown" class="countdown" hidden>
       <div class="unit unit--days">
         <div id="days" class="value"><span class="digit">0</span><span class="digit">0</span></div>
@@ -41,8 +35,17 @@
       </div>
     </div>
 
-    <button id="change-date" class="change-date" hidden>Change date</button>
+    <button id="change-date" class="change-date" hidden>Change Reservation</button>
   </main>
+
+  <div id="date-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="date-form-label">
+    <div class="modal-backdrop"></div>
+    <form id="date-form" class="date-form">
+      <label id="date-form-label" for="date-input">Count down to</label>
+      <input type="date" id="date-input" required />
+      <button type="submit">Set</button>
+    </form>
+  </div>
 
   <script type="module" src="script.js"></script>
 </body>

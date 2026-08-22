@@ -6,6 +6,8 @@ const form = document.getElementById("date-form");
 const dateInput = document.getElementById("date-input");
 const countdownEl = document.getElementById("countdown");
 const changeDateBtn = document.getElementById("change-date");
+const dateModal = document.getElementById("date-modal");
+const modalBackdrop = document.querySelector(".modal-backdrop");
 const daysEl = document.getElementById("days");
 const hoursEl = document.getElementById("hours");
 const minutesEl = document.getElementById("minutes");
@@ -181,8 +183,13 @@ form.addEventListener("submit", (e) => {
 });
 
 changeDateBtn.addEventListener("click", () => {
-  stopCountdown();
   showForm();
+});
+
+modalBackdrop.addEventListener("click", closeModal);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeModal();
 });
 
 function initFromUrl() {
@@ -220,13 +227,16 @@ function parseDateInput(value) {
 }
 
 function showForm() {
-  form.hidden = false;
-  countdownEl.hidden = true;
-  changeDateBtn.hidden = true;
+  dateModal.hidden = false;
+}
+
+function closeModal() {
+  if (changeDateBtn.hidden) return; // no active countdown to return to
+  dateModal.hidden = true;
 }
 
 function startCountdown(target) {
-  form.hidden = true;
+  dateModal.hidden = true;
   changeDateBtn.hidden = false;
   stopCountdown();
   tick(target);
