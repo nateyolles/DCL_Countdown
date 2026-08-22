@@ -273,7 +273,7 @@ function initBackground() {
 
   const dotLottie = new DotLottie({
     canvas,
-    src: "assets/animations/landing_background_lottie.json",
+    src: "assets/animations/landing_background_cropped.json",
     autoplay: true,
     loop: true,
   });
