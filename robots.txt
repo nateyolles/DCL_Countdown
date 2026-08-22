@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nateyolles.github.io/DCL_Countdown/sitemap.xml

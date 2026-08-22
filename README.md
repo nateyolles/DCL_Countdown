@@ -38,7 +38,9 @@ assets/
 demo/        reference screenshot/video used while building the flip-card UI
 ```
 
-## Note on assets
+## Disclaimer
 
-The character emoji and fonts are Disney-branded assets used for personal,
-non-commercial reference only — not for redistribution.
+This project is for educational purposes only. It is not monetized in any way —
+there is no advertising, products for sale, user sign-in, trcking or affiliate links.
+
+Disney is the sole owner of all Disney branded assets.
