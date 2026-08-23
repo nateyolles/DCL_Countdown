@@ -29,6 +29,24 @@ body {
   font-family: "InspireTWDC", sans-serif;
 }
 
+body.rotate-cw,
+body.rotate-ccw {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vh;
+  height: 100vw;
+  transform-origin: top left;
+}
+
+body.rotate-cw {
+  transform: rotate(90deg) translateY(-100%);
+}
+
+body.rotate-ccw {
+  transform: rotate(-90deg) translateX(-100%);
+}
+
 #background-canvas {
   position: fixed;
   inset: 0;
@@ -79,6 +97,42 @@ body {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
+}
+
+.icon-button {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.icon-button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.rotate-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.rotate-btn.is-active {
+  background: var(--main-light-blue-color);
+  color: #ffffff;
 }
 
 .date-form[hidden] {

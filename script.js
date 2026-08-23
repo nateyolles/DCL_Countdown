@@ -1,6 +1,7 @@
 import { DotLottie } from "https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.30.0/+esm";
 
 const DATE_PARAM = "date";
+const ROTATE_PARAM = "rotate";
 const CRUISES_API_URL = "https://t40n13yy36.execute-api.us-west-2.amazonaws.com/cruises";
 
 const form = document.getElementById("date-form");
@@ -9,12 +10,18 @@ const manualDateBack = document.getElementById("manual-date-back");
 const countdownEl = document.getElementById("countdown");
 const changeDateBtn = document.getElementById("change-date");
 const dateModal = document.getElementById("date-modal");
-const modalBackdrop = document.querySelector(".modal-backdrop");
+const modalBackdrop = document.getElementById("date-modal-backdrop");
 const cruiseForm = document.getElementById("cruise-form");
 const shipSelect = document.getElementById("ship-select");
 const cruiseSelect = document.getElementById("cruise-select");
 const cruiseLoadError = document.getElementById("cruise-load-error");
 const manualDateToggle = document.getElementById("manual-date-toggle");
+const settingsToggle = document.getElementById("settings-toggle");
+const settingsModal = document.getElementById("settings-modal");
+const settingsModalBackdrop = document.getElementById("settings-modal-backdrop");
+const settingsBack = document.getElementById("settings-back");
+const rotateCwBtn = document.getElementById("rotate-cw-btn");
+const rotateCcwBtn = document.getElementById("rotate-ccw-btn");
 const daysEl = document.getElementById("days");
 const hoursEl = document.getElementById("hours");
 const minutesEl = document.getElementById("minutes");
@@ -23,6 +30,8 @@ const secondsEl = document.getElementById("seconds");
 let timerId = null;
 let cruises = [];
 let cruisesLoadFailed = false;
+let backgroundResize = null;
+let dotLottieInstance = null;
 
 const EMOJI_COUNT = 64;
 const zeroEmojiAssignments = new Map();
@@ -178,6 +187,7 @@ function renderDigits(unitEl, slotPrefix, digitStr, usedEmojis) {
   });
 }
 
+initRotationFromUrl();
 initBackground();
 initFromUrl();
 preloadEmojis();
@@ -211,10 +221,27 @@ changeDateBtn.addEventListener("click", () => {
   showForm();
 });
 
+settingsToggle.addEventListener("click", openSettings);
+settingsBack.addEventListener("click", closeSettings);
+settingsModalBackdrop.addEventListener("click", closeSettings);
+
+rotateCwBtn.addEventListener("click", () => {
+  setRotation(currentRotation() === "cw" ? null : "cw");
+});
+
+rotateCcwBtn.addEventListener("click", () => {
+  setRotation(currentRotation() === "ccw" ? null : "ccw");
+});
+
 modalBackdrop.addEventListener("click", closeModal);
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeModal();
+  if (e.key !== "Escape") return;
+  if (!settingsModal.hidden) {
+    closeSettings();
+  } else {
+    closeModal();
+  }
 });
 
 function initFromUrl() {
@@ -334,6 +361,58 @@ function closeModal() {
   dateModal.hidden = true;
 }
 
+function openSettings() {
+  dateModal.hidden = true;
+  settingsModal.hidden = false;
+  updateRotateButtonStates();
+}
+
+function closeSettings() {
+  settingsModal.hidden = true;
+  dateModal.hidden = false;
+}
+
+function currentRotation() {
+  if (document.body.classList.contains("rotate-cw")) return "cw";
+  if (document.body.classList.contains("rotate-ccw")) return "ccw";
+  return null;
+}
+
+function updateRotateButtonStates() {
+  const rotation = currentRotation();
+  rotateCwBtn.classList.toggle("is-active", rotation === "cw");
+  rotateCcwBtn.classList.toggle("is-active", rotation === "ccw");
+}
+
+function applyRotation(value) {
+  document.body.classList.remove("rotate-cw", "rotate-ccw");
+  if (value === "cw" || value === "ccw") {
+    document.body.classList.add(`rotate-${value}`);
+  }
+  if (backgroundResize) backgroundResize();
+}
+
+function setRotation(value) {
+  applyRotation(value);
+  updateRotateButtonStates();
+
+  const params = new URLSearchParams(window.location.search);
+  if (value) {
+    params.set(ROTATE_PARAM, value);
+  } else {
+    params.delete(ROTATE_PARAM);
+  }
+  const qs = params.toString();
+  const newUrl = `${window.location.pathname}${qs ? `?${qs}` : ""}`;
+  window.history.replaceState({}, "", newUrl);
+}
+
+function initRotationFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get(ROTATE_PARAM);
+  applyRotation(raw === "cw" || raw === "ccw" ? raw : null);
+}
+
 function startCountdown(target) {
   dateModal.hidden = true;
   changeDateBtn.hidden = false;
@@ -371,13 +450,34 @@ function tick(target) {
   renderDigits(secondsEl, "seconds", String(seconds).padStart(2, "0"), usedEmojis);
 }
 
+// DotLottie's own public resize() derives canvas.width/height from
+// canvas.getBoundingClientRect(), which is the POST-rotation on-screen box —
+// always the plain viewport size, never the swapped orientation we need while
+// rotated. So instead of calling it, we set canvas.width/height ourselves and
+// drive the WASM core's resize directly, keeping its internal render buffer
+// in sync with what we just set (mixing the two desyncs the buffer's stride
+// from the canvas's actual size and renders as scrambled pixels).
+function syncBackgroundCanvas(canvas, dotLottie) {
+  const rotated = currentRotation() !== null;
+  const width = rotated ? window.innerHeight : window.innerWidth;
+  const height = rotated ? window.innerWidth : window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+
+  const core = dotLottie && dotLottie._dotLottieCore;
+  if (core && typeof core.resize === "function") {
+    if (core.resize(canvas.width, canvas.height)) dotLottie._render();
+  } else if (dotLottie) {
+    dotLottie.resize();
+  }
+}
+
 function initBackground() {
   const canvas = document.getElementById("background-canvas");
 
-  const resize = () => {
-    canvas.width = window.innerWidth * window.devicePixelRatio;
-    canvas.height = window.innerHeight * window.devicePixelRatio;
-  };
+  const resize = () => syncBackgroundCanvas(canvas, dotLottieInstance);
+  backgroundResize = resize;
   resize();
 
   const dotLottie = new DotLottie({
@@ -386,9 +486,16 @@ function initBackground() {
     autoplay: true,
     loop: true,
   });
+  dotLottieInstance = dotLottie;
 
-  window.addEventListener("resize", () => {
+  // DotLottie resizes itself (from the not-yet-correct on-screen box) right
+  // before its first frame; the "frame" event fires right after that resize
+  // but before the render, so correcting here lands before anything is drawn.
+  function handleFirstFrame() {
+    dotLottie.removeEventListener("frame", handleFirstFrame);
     resize();
-    dotLottie.resize();
-  });
+  }
+  dotLottie.addEventListener("frame", handleFirstFrame);
+
+  window.addEventListener("resize", resize);
 }
