@@ -73,7 +73,7 @@ body.rotate-ccw {
   /* justify-content: center;
   gap: 4rem;
   padding: 1.5rem; */
-  top: 16vh;
+  top: var(--content-top, 16vh);
   text-align: center;
 }
 
@@ -432,7 +432,7 @@ body.rotate-ccw {
 
 .change-date {
   position: fixed;
-  bottom: 4vh;
+  bottom: var(--button-bottom, 4vh);
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;

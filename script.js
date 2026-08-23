@@ -4,6 +4,18 @@ const DATE_PARAM = "date";
 const ROTATE_PARAM = "rotate";
 const CRUISES_API_URL = "https://t40n13yy36.execute-api.us-west-2.amazonaws.com/cruises";
 
+// Natural composition size of landing_background_cropped.lottie. DotLottie
+// renders it with "contain" fit, centered — never stretched, so at most
+// aspect ratios there's blank space on either the sides or top/bottom.
+const BACKGROUND_COMP_WIDTH = 856;
+const BACKGROUND_COMP_HEIGHT = 1100;
+
+// How far the cards sit below the top of the visible animation, and the
+// button above its bottom, as a fraction of the animation's own rendered
+// height (not the viewport) — so they track the animation, not the screen.
+const CONTENT_TOP_FRACTION = 0.16;
+const BUTTON_BOTTOM_FRACTION = 0.04;
+
 const form = document.getElementById("date-form");
 const dateInput = document.getElementById("date-input");
 const manualDateBack = document.getElementById("manual-date-back");
@@ -450,6 +462,21 @@ function tick(target) {
   renderDigits(secondsEl, "seconds", String(seconds).padStart(2, "0"), usedEmojis);
 }
 
+// Recomputes where the visible (non-letterboxed) animation actually sits
+// within the canvas, and positions the cards/button relative to ITS edges
+// instead of the raw viewport — so they stay over the animation, never in
+// the blank bars, at any aspect ratio or rotation.
+function updateContentPositioning(canvasCssWidth, canvasCssHeight) {
+  const scale = Math.min(canvasCssWidth / BACKGROUND_COMP_WIDTH, canvasCssHeight / BACKGROUND_COMP_HEIGHT);
+  const contentHeight = BACKGROUND_COMP_HEIGHT * scale;
+  const contentTop = (canvasCssHeight - contentHeight) / 2;
+  const contentBottom = canvasCssHeight - contentTop - contentHeight;
+
+  const root = document.documentElement.style;
+  root.setProperty("--content-top", `${contentTop + CONTENT_TOP_FRACTION * contentHeight}px`);
+  root.setProperty("--button-bottom", `${contentBottom + BUTTON_BOTTOM_FRACTION * contentHeight}px`);
+}
+
 // DotLottie's own public resize() derives canvas.width/height from
 // canvas.getBoundingClientRect(), which is the POST-rotation on-screen box —
 // always the plain viewport size, never the swapped orientation we need while
@@ -464,6 +491,7 @@ function syncBackgroundCanvas(canvas, dotLottie) {
   const dpr = window.devicePixelRatio || 1;
   canvas.width = width * dpr;
   canvas.height = height * dpr;
+  updateContentPositioning(width, height);
 
   const core = dotLottie && dotLottie._dotLottieCore;
   if (core && typeof core.resize === "function") {
