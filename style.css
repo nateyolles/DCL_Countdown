@@ -320,6 +320,12 @@ body.rotate-ccw {
   height: 200%;
 }
 
+.digit-glyph:not(.digit-glyph--emoji) {
+  /* The font's ink sits above the line box's geometric center (extra reserved
+     descender space it doesn't use for digits); nudge down to compensate. */
+  transform: translateY(0.0625em);
+}
+
 .digit-glyph--emoji img {
   width: 90%;
   height: 90%;
