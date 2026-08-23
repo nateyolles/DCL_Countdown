@@ -99,11 +99,16 @@ body.rotate-ccw {
   background: rgba(0, 0, 0, 0.55);
 }
 
-.icon-button {
+.icon-button-row {
   position: absolute;
   top: 1.25rem;
   right: 1.25rem;
   z-index: 2;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.icon-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,6 +138,22 @@ body.rotate-ccw {
 .rotate-btn.is-active {
   background: var(--main-light-blue-color);
   color: #ffffff;
+}
+
+.about-content {
+  max-width: 26rem;
+}
+
+.about-content p {
+  margin: 0;
+  text-align: left;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.about-content a {
+  color: var(--main-light-blue-color);
+  font-weight: 600;
 }
 
 .date-form[hidden] {

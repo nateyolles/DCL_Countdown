@@ -34,6 +34,10 @@ const settingsModalBackdrop = document.getElementById("settings-modal-backdrop")
 const settingsBack = document.getElementById("settings-back");
 const rotateCwBtn = document.getElementById("rotate-cw-btn");
 const rotateCcwBtn = document.getElementById("rotate-ccw-btn");
+const aboutToggle = document.getElementById("about-toggle");
+const aboutModal = document.getElementById("about-modal");
+const aboutModalBackdrop = document.getElementById("about-modal-backdrop");
+const aboutBack = document.getElementById("about-back");
 const daysEl = document.getElementById("days");
 const hoursEl = document.getElementById("hours");
 const minutesEl = document.getElementById("minutes");
@@ -237,6 +241,10 @@ settingsToggle.addEventListener("click", openSettings);
 settingsBack.addEventListener("click", closeSettings);
 settingsModalBackdrop.addEventListener("click", closeSettings);
 
+aboutToggle.addEventListener("click", openAbout);
+aboutBack.addEventListener("click", closeAbout);
+aboutModalBackdrop.addEventListener("click", closeAbout);
+
 rotateCwBtn.addEventListener("click", () => {
   setRotation(currentRotation() === "cw" ? null : "cw");
 });
@@ -251,6 +259,8 @@ document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
   if (!settingsModal.hidden) {
     closeSettings();
+  } else if (!aboutModal.hidden) {
+    closeAbout();
   } else {
     closeModal();
   }
@@ -381,6 +391,16 @@ function openSettings() {
 
 function closeSettings() {
   settingsModal.hidden = true;
+  dateModal.hidden = false;
+}
+
+function openAbout() {
+  dateModal.hidden = true;
+  aboutModal.hidden = false;
+}
+
+function closeAbout() {
+  aboutModal.hidden = true;
   dateModal.hidden = false;
 }
 
