@@ -4,6 +4,10 @@ A single-page countdown timer to a Disney Cruise Line sail date, styled after th
 official DCL app's flip-card countdown. No build step — plain HTML, CSS, and
 JavaScript.
 
+## Live site
+
+Hosted on GitHub Pages at [nateyolles.github.io/DCL_Countdown](https://nateyolles.github.io/DCL_Countdown/).
+
 ## Features
 
 - Flip-card digit tiles with a 3D flip animation on every change, days/hours/mins/secs.
