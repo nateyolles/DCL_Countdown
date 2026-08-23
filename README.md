@@ -38,6 +38,14 @@ assets/
 demo/        reference screenshot/video used while building the flip-card UI
 ```
 
+## Cruise data
+
+The ship and departure date dropdowns are powered by a small data feed hosted in
+[DCL_CruiseFeedIO](https://github.com/nateyolles/DCL_CruiseFeedIO) (AWS Lambda,
+DynamoDB, and API Gateway) which serves the list of upcoming Disney Cruise Line
+sailings as JSON. If that feed can't be reached, the app falls back to letting you
+pick a departure date manually.
+
 ## Disclaimer
 
 This project is for educational purposes only. It is not monetized in any way —
