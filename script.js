@@ -279,7 +279,7 @@ function parseDateInput(value) {
 function applyDate(value) {
   const target = parseDateInput(value);
   if (!target || Number.isNaN(target.getTime())) return false;
-  target.setSeconds(target.getSeconds() - 1); // subtract 1 second to match the app functionality
+  // target.setSeconds(target.getSeconds() - 1); // subtract 1 second to match the app functionality
   startCountdown(target);
   return true;
 }
